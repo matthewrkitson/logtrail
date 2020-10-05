@@ -70,22 +70,32 @@ function convertToClientFormat(selectedConfig, esResponse) {
       source[selectedConfig.fields.mapping.message] = hits[i].highlight[selectedConfig.fields.mapping.message][0];
     }
     var message = get(source, selectedConfig.fields.mapping.message);
+    
+    //Identify hyperlinks before sanitizing (regex from https://www.regextester.com/94502)
+    var urlRegex = /((?:http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)*)[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+/g
+    message = message.replace(urlRegex, "logtrail_url_pre_tag$&logtrail_url_post_tag")
+
     //sanitize html
     var escape = require('lodash/escape');
     message = escape(message);
+
     //if highlight is present then replace pre and post tag with html
     if (hits[i].highlight) {
       message = message.replace(/logtrail.highlight.pre_tag/g,'<span class="highlight">');
       message = message.replace(/logtrail.highlight.post_tag/g,'</span>');
     }
-    source[selectedConfig.fields.mapping.message] = message;
+
+    //Convert escaped url text found earlier into real hyperlinks
+    message = message.replace(/logtrail_url_pre_tag(.*?)logtrail_url_post_tag/g, "<a href='$1' target='_blank'>$1</a>")
 
     //If the user has specified a custom format for message field
+    source[selectedConfig.fields.mapping.message] = message;
     if (messageFormat) {
       event.message = template(source);
     } else {
       event.message = message;
     }
+
     clientResponse.push(event);
   }
   return clientResponse;
