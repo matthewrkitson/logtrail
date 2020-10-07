@@ -25,7 +25,8 @@
         "keyword_suffix" : "keyword"
       },
       "color_mapping" : {
-      }
+      },
+      "convert_urls_to_hyperlinks": false
     },
     {
       "es": {
@@ -51,7 +52,8 @@
         "keyword_suffix" : "keyword"
       },
       "color_mapping" : {
-      }
+      },
+      "convert_urls_to_hyperlinks": false
     }
   ]
 }

@@ -71,9 +71,11 @@ function convertToClientFormat(selectedConfig, esResponse) {
     }
     var message = get(source, selectedConfig.fields.mapping.message);
     
-    //Identify hyperlinks before sanitizing (regex from https://www.regextester.com/94502)
-    var urlRegex = /((?:http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)*)[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+/g
-    message = message.replace(urlRegex, "logtrail_url_pre_tag$&logtrail_url_post_tag")
+    if (selectedConfig.convert_urls_to_hyperlinks) {
+      //Identify hyperlinks before sanitizing (regex from https://www.regextester.com/94502)
+      var urlRegex = /((?:http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)*)[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+/g
+      message = message.replace(urlRegex, "logtrail_url_pre_tag$&logtrail_url_post_tag")
+    }
 
     //sanitize html
     var escape = require('lodash/escape');
@@ -85,8 +87,10 @@ function convertToClientFormat(selectedConfig, esResponse) {
       message = message.replace(/logtrail.highlight.post_tag/g,'</span>');
     }
 
-    //Convert escaped url text found earlier into real hyperlinks
-    message = message.replace(/logtrail_url_pre_tag(.*?)logtrail_url_post_tag/g, "<a href='$1' target='_blank'>$1</a>")
+    if (selectedConfig.convert_urls_to_hyperlinks) {
+      //Convert escaped url text found earlier into real hyperlinks
+      message = message.replace(/logtrail_url_pre_tag(.*?)logtrail_url_post_tag/g, "<a href='$1' target='_blank'>$1</a>")
+    }
 
     //If the user has specified a custom format for message field
     source[selectedConfig.fields.mapping.message] = message;

@@ -61,6 +61,7 @@ Configuration
 - `message_format` - Used to add additional fields to be shown for log event. For more details refer [Adding additional fields](docs/add_fields.md)
 - `keyword_suffix` - Specifies the keyword suffix to be appended for hostname & program fields. Set it to empty string (`""`) to not append any suffix. If not specified (`undefined`) logtrail will append `keyword`.
 - `color_mapping` - Color code messages based on field values. For more details refer [Color coding messages](docs/color_mapping.md)
+- `convert_urls_to_hyperlinks` - If set to "true", text that looks like urls will be converted to hyperlinks. 
 - Any changes in `logtrail.json` require a restart of Kibana
 - Logtrail can read `logtrail.json` configuration from Elasticsearch instead of the filesystem. This will be useful when sharing the same configuration across multiple installations. For more info refer [Load Logtrail configuration from Elasticsearch](https://github.com/sivasamyk/logtrail/blob/master/docs/how_to.md#3-load-logtrail-configuration-from-elasticsearch)
 - Refer [logtrail-config-examples](https://github.com/sivasamyk/logtrail-config-examples) repo for sample configurations 
